@@ -332,7 +332,7 @@ document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 }
 
 .ev-status-dot.past {
-  color: rgba(255, 255, 255, .6);
+  color: #d97706;
 }
 
 .no-events {

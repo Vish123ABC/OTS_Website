@@ -978,8 +978,12 @@ HTML);
         case 'delete_event':
             requireMethod('POST');
             requireRole('admin');
-            $db = getDB();
-            $db->prepare("DELETE FROM events WHERE id=?")->execute([(int)($input['id'] ?? 0)]);
+            $db  = getDB();
+            $eid = (int)($input['id'] ?? 0);
+            // tickets references events(id) without ON DELETE CASCADE, so with
+            // PRAGMA foreign_keys=ON the parent delete would fail. Remove them first.
+            $db->prepare("DELETE FROM tickets WHERE event_id=?")->execute([$eid]);
+            $db->prepare("DELETE FROM events WHERE id=?")->execute([$eid]);
             echo json_encode(['success' => true]);
             break;
 
