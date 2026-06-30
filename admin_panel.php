@@ -188,7 +188,7 @@ $user = requireRole('admin');
           <h3>Registration Link</h3>
           <p class="section-hint">The URL visitors click to purchase membership.</p>
           <div class="form-group" style="margin-top:12px">
-            <label>Eventbrite / Registration URL</label>
+            <label>Zeffy / Registration URL</label>
             <input type="url" id="registerUrlInput" placeholder="https://…" style="font-size:.85rem" />
           </div>
           <button class="btn-primary" id="saveRegisterUrlBtn" style="margin-top:8px">Save URL</button>
@@ -510,8 +510,12 @@ $user = requireRole('admin');
           <input type="date" id="evDate" />
         </div>
         <div class="form-group">
-          <label>Time</label>
+          <label>Start Time</label>
           <input type="text" id="evTime" placeholder="6:00 PM" />
+        </div>
+        <div class="form-group">
+          <label>End Time</label>
+          <input type="text" id="evEndTime" placeholder="9:00 PM" />
         </div>
       </div>
       <div class="form-group">
@@ -530,7 +534,7 @@ $user = requireRole('admin');
       </div>
       <div class="form-group">
         <label>External Ticket URL</label>
-        <input type="url" id="evTicketUrl" placeholder="https://eventbrite.ca/…" />
+        <input type="url" id="evTicketUrl" placeholder="https://zeffy.ca/…" />
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -958,7 +962,7 @@ $user = requireRole('admin');
       </div>
       <div class="form-group">
         <label>Notes <small>(internal)</small></label>
-        <input type="text" id="activateMemNotes" placeholder="e.g. Paid via Eventbrite order #123" />
+        <input type="text" id="activateMemNotes" placeholder="e.g. Paid via Zeffy order #123" />
       </div>
       <div style="display:flex;gap:12px;margin-top:8px">
         <button class="btn-primary" id="confirmActivateMemBtn">Activate Membership</button>
@@ -1174,7 +1178,7 @@ $user = requireRole('admin');
     el.innerHTML = `<table class="data-table"><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Prices</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
     <tbody>${allEvents.map(ev => `<tr>
       <td><strong>${esc(ev.title)}</strong>${ev.title_tamil?`<br><small class="text-muted">${esc(ev.title_tamil)}</small>`:''}</td>
-      <td>${ev.event_date||'TBD'}${ev.event_time?'<br><small>'+esc(ev.event_time)+'</small>':''}</td>
+      <td>${ev.event_date||'TBD'}${ev.event_time?'<br><small>'+esc(ev.event_time)+(ev.event_end_time?' – '+esc(ev.event_end_time):'')+'</small>':''}</td>
       <td>${esc(ev.location||'—')}</td>
       <td><small>Member: $${parseFloat(ev.member_price||0).toFixed(2)}<br>Regular: $${parseFloat(ev.regular_price||0).toFixed(2)}</small></td>
       <td><span class="badge badge-${ev.is_upcoming?'upcoming':'past'}">${ev.is_upcoming?'Upcoming':'Past'}</span></td>
@@ -1191,7 +1195,9 @@ $user = requireRole('admin');
   function openNewEvent() {
     editingEventId = null;
     document.getElementById('eventModalTitle').textContent = 'New Event';
-    ['evTitle', 'evTitleTamil', 'evDate', 'evTime', 'evLocation', 'evMemberPrice', 'evRegularPrice', 'evTicketUrl']
+    ['evTitle', 'evTitleTamil', 'evDate', 'evTime', 'evEndTime', 'evLocation', 'evMemberPrice', 'evRegularPrice',
+      'evTicketUrl'
+    ]
     .forEach(id => document.getElementById(id).value = '');
     document.getElementById('evPublished').value = '1';
     document.getElementById('evUpcoming').value = '1';
@@ -1212,6 +1218,7 @@ $user = requireRole('admin');
     document.getElementById('evTitleTamil').value = ev.title_tamil || '';
     document.getElementById('evDate').value = ev.event_date || '';
     document.getElementById('evTime').value = ev.event_time || '';
+    document.getElementById('evEndTime').value = ev.event_end_time || '';
     document.getElementById('evLocation').value = ev.location || '';
     document.getElementById('evMemberPrice').value = ev.member_price || '';
     document.getElementById('evRegularPrice').value = ev.regular_price || '';
@@ -1241,6 +1248,7 @@ $user = requireRole('admin');
       title_tamil: document.getElementById('evTitleTamil').value,
       event_date: document.getElementById('evDate').value,
       event_time: document.getElementById('evTime').value,
+      event_end_time: document.getElementById('evEndTime').value,
       location: document.getElementById('evLocation').value,
       member_price: document.getElementById('evMemberPrice').value,
       regular_price: document.getElementById('evRegularPrice').value,

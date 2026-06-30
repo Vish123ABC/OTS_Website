@@ -54,6 +54,7 @@ function _initSchema(PDO $db): void {
             description   TEXT,
             event_date    DATE,
             event_time    TEXT,
+            event_end_time TEXT,
             location      TEXT,
             image_path    TEXT,
             ticket_url    TEXT,
@@ -290,6 +291,9 @@ function _initSchema(PDO $db): void {
     // Add zeffy_form_slug to events table
     try { $db->exec("ALTER TABLE events ADD COLUMN zeffy_form_slug TEXT NOT NULL DEFAULT ''"); } catch (PDOException) {}
 
+    // Add event end time to events table
+    try { $db->exec("ALTER TABLE events ADD COLUMN event_end_time TEXT"); } catch (PDOException) {}
+
     // Add new columns to existing users table (for databases created before this schema version)
     $newUserCols = [
         'email_verified'       => 'ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0',
@@ -408,7 +412,10 @@ function _seedDefaults(PDO $db): void {
 
     // Seed membership register URL if not set
     $db->prepare("INSERT OR IGNORE INTO site_content (section_key,content_html) VALUES (?,?)")
-       ->execute(['membership_register_url', 'https://www.eventbrite.ca/e/ottawa-tamil-sangam-membership-annual-12-months-from-date-of-purchase-tickets-876297869517?aff=oddtdtcreator']);
+       ->execute(['membership_register_url', 'https://www.zeffy.com/en-CA/ticketing/ottawa-tamil-sangams-annual-membership']);
+    // Migrate any legacy Eventbrite membership URL to Zeffy (OTS no longer uses Eventbrite)
+    $db->prepare("UPDATE site_content SET content_html=? WHERE section_key='membership_register_url' AND content_html LIKE '%eventbrite%'")
+       ->execute(['https://www.zeffy.com/en-CA/ticketing/ottawa-tamil-sangams-annual-membership']);
 
     // Seed contact form recipient email (admin can change in dashboard)
     $db->prepare("INSERT OR IGNORE INTO settings (key,value) VALUES (?,?)")

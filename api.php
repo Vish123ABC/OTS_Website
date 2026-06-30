@@ -909,8 +909,8 @@ HTML);
             $user = getCurrentUser();
             $db   = getDB();
             $ins  = $db->prepare(
-                "INSERT INTO events (title,title_tamil,description,event_date,event_time,location,image_path,ticket_url,member_price,regular_price,is_upcoming,is_published,created_by)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                "INSERT INTO events (title,title_tamil,description,event_date,event_time,event_end_time,location,image_path,ticket_url,member_price,regular_price,is_upcoming,is_published,created_by)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             );
             $eventDate  = trim($input['event_date'] ?? '');
             // Auto-derive is_upcoming from date; if no date, default to upcoming
@@ -923,6 +923,7 @@ HTML);
                 $input['description'] ?? '',
                 $eventDate ?: null,
                 $input['event_time'] ?? '',
+                $input['event_end_time'] ?? '',
                 trim($input['location'] ?? ''),
                 $input['image_path'] ?? '',
                 $input['ticket_url'] ?? '',
@@ -948,7 +949,7 @@ HTML);
                 $upd->execute([$input['description'] ?? '', $input['image_path'] ?? '', $id]);
             } else {
                 $upd = $db->prepare(
-                    "UPDATE events SET title=?,title_tamil=?,description=?,event_date=?,event_time=?,
+                    "UPDATE events SET title=?,title_tamil=?,description=?,event_date=?,event_time=?,event_end_time=?,
                      location=?,image_path=?,ticket_url=?,member_price=?,regular_price=?,is_upcoming=?,is_published=?,updated_at=CURRENT_TIMESTAMP
                      WHERE id=?"
                 );
@@ -962,6 +963,7 @@ HTML);
                     $input['description'] ?? '',
                     $evDate2 ?: null,
                     $input['event_time'] ?? '',
+                    $input['event_end_time'] ?? '',
                     trim($input['location'] ?? ''),
                     $input['image_path'] ?? '',
                     $input['ticket_url'] ?? '',

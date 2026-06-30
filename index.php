@@ -4,10 +4,10 @@ require_once __DIR__ . '/db.php';
 ots_session();
 $currentUser = getCurrentUser();
 
-// Load the 2 most recent events for the "Featured Events" section
+// Load the 2 soonest upcoming events for the "Featured Events" section
 $db = getDB();
 $featuredEvents = $db->query(
-    "SELECT * FROM events WHERE is_published=1 ORDER BY event_date DESC LIMIT 2"
+    "SELECT * FROM events WHERE is_published=1 AND is_upcoming=1 ORDER BY event_date ASC LIMIT 2"
 )->fetchAll();
 // Total published events — used to decide whether to show the "see all" link
 $totalEvents = (int)$db->query("SELECT COUNT(*) FROM events WHERE is_published=1")->fetchColumn();
@@ -375,11 +375,21 @@ document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 .events-row {
   display: flex;
   align-items: stretch;
-  gap: 28px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 .events-row .event-grid {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px;
+}
+.events-row .event-card {
+  width: 340px;
+  max-width: 100%;
 }
 .see-all-link {
   flex: 0 0 auto;

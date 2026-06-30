@@ -4,7 +4,7 @@ include_once "header.php";
 $db = getDB();
 $pricingTiers  = $db->query("SELECT * FROM membership_tiers ORDER BY display_order ASC, id ASC")->fetchAll();
 $benefitPanels = $db->query("SELECT * FROM benefit_panels ORDER BY display_order ASC, id ASC")->fetchAll();
-$registerUrl  = getSiteContent('membership_register_url', 'https://www.eventbrite.ca/e/ottawa-tamil-sangam-membership-annual-12-months-from-date-of-purchase-tickets-876297869517?aff=oddtdtcreator');
+$registerUrl  = getSiteContent('membership_register_url', 'https://www.zeffy.com/en-CA/ticketing/ottawa-tamil-sangams-annual-membership');
 $isActive     = isActiveMember($currentUser);
 $upgrade      = isset($_GET['upgrade']);
 ?>

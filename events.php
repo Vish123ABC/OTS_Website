@@ -34,7 +34,7 @@ include_once "header.php";
             <span class="gallery-pill"><i class="bi bi-calendar3"></i> <?= date('F j, Y', strtotime($singleEvent['event_date'])) ?></span>
             <?php endif; ?>
             <?php if ($singleEvent['event_time']): ?>
-            <span class="gallery-pill"><i class="bi bi-clock"></i> <?= e($singleEvent['event_time']) ?></span>
+            <span class="gallery-pill"><i class="bi bi-clock"></i> <?= e($singleEvent['event_time']) ?><?= !empty($singleEvent['event_end_time']) ? ' &ndash; '.e($singleEvent['event_end_time']) : '' ?></span>
             <?php endif; ?>
             <?php if ($singleEvent['location']): ?>
             <span class="gallery-pill"><i class="bi bi-geo-alt"></i> <?= e($singleEvent['location']) ?></span>
@@ -282,7 +282,7 @@ include_once "header.php";
             <div class="event-detail-item">
               <i class="bi bi-clock"></i>
               <div><strong>Time</strong>
-                <p><?= e($singleEvent['event_time']) ?></p>
+                <p><?= e($singleEvent['event_time']) ?><?= !empty($singleEvent['event_end_time']) ? ' &ndash; '.e($singleEvent['event_end_time']) : '' ?></p>
               </div>
             </div>
             <?php endif; ?>
